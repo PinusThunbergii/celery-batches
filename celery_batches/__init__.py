@@ -116,6 +116,8 @@ class SimpleRequest:
 
     #: TODO
     chord = None
+    group = None
+    group_index = None
 
     def __init__(
         self,
@@ -129,6 +131,9 @@ class SimpleRequest:
         reply_to: Optional[str],
         correlation_id: Optional[str],
         request_dict: Optional[Dict[str, Any]],
+        chord: Optional[str] = None,
+        group: Optional[str] = None,
+        group_index: Optional[int] = None,
     ):
         self.id = id
         self.name = name
@@ -140,6 +145,9 @@ class SimpleRequest:
         self.reply_to = reply_to
         self.correlation_id = correlation_id
         self.request_dict = request_dict
+        self.chord = chord
+        self.group = group
+        self.group_index = group_index
 
     @classmethod
     def from_request(cls, request: Request) -> "SimpleRequest":
@@ -147,6 +155,9 @@ class SimpleRequest:
         args, kwargs, embed = request._payload
         # Celery 5.1.0 added an ignore_result option.
         ignore_result = getattr(request, "ignore_result", False)
+        chord = getattr(request, "chord", None)
+        group = getattr(request, "group", None)
+        group_index = getattr(request, "group_index", None)
         return cls(
             request.id,
             request.name,
@@ -158,6 +169,9 @@ class SimpleRequest:
             request.reply_to,
             request.correlation_id,
             request.request_dict,
+            chord,
+            group,
+            group_index
         )
 
 
